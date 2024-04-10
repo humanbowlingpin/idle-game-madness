@@ -20,7 +20,7 @@ let shopMultiplier = 1;
 let intervalFunction;
 
 clickButton.addEventListener("click", () => {
-  total += 1 * clickMultiplier;
+    total += 1 * clickMultiplier;
     displayValue()
 });
 
@@ -48,14 +48,14 @@ function getDiamond(range, diamondAmount, runningTime) {
 }
 
 tier1.addEventListener("click", () => {
-  if (total < (10 * costMultiplier * shopMultiplier)) {
-    pushWarning(`not enough, come back when you have ${10 * costMultiplier} clicks`)
-    return;
-  }
-  total -= 10 * costMultiplier * shopMultiplier
-  clickMultiplier += shopMultiplier;
-  getDiamond(100, 1, shopMultiplier)
-  displayValue()
+    if (total < (10 * costMultiplier * shopMultiplier)) {
+        pushWarning(`not enough, come back when you have ${10 * costMultiplier} clicks`)
+        return;
+    }
+    total -= 10 * costMultiplier * shopMultiplier
+    clickMultiplier += shopMultiplier;
+    getDiamond(100, 1, shopMultiplier)
+    displayValue()
 });
 
 tier2.addEventListener('click', ()=> {
@@ -148,7 +148,6 @@ function updateShop(value) {
     updateButtonsText();
   }
   
-  document.querySelector(".dropdownSelector").addEventListener("change", handleSelection);
-  
+document.querySelector(".dropdownSelector").addEventListener("change", handleSelection);  
 
 updateIntervalSpeed()
