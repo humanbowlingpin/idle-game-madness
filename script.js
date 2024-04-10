@@ -1,4 +1,5 @@
 const display = document.querySelector(".total-display");
+const warningContainer = document.querySelector(".warning-container");
 const warning = document.querySelector(".warning");
 const clickButton = document.querySelector(".click");
 
@@ -46,7 +47,7 @@ function getDiamond(range, diamondAmount) {
 
 tier1.addEventListener("click", () => {
   if (total < 10 * costMultiplier) {
-    warning.textContent = `not enough, come back when you have ${10 * costMultiplier} clicks`;
+    pushWarning(`not enough, come back when you have ${10 * costMultiplier} clicks`)
     return;
   }
   total -= 10 * costMultiplier
@@ -57,7 +58,7 @@ tier1.addEventListener("click", () => {
 
 tier2.addEventListener('click', ()=> {
     if (total < 100 * costMultiplier) {
-        warning.textContent = `not enough, come back when you have ${100 * costMultiplier} clicks`;
+        pushWarning(`not enough, come back when you have ${100 * costMultiplier} clicks`)
         return;
     }
     total -= 100 * costMultiplier
@@ -68,7 +69,7 @@ tier2.addEventListener('click', ()=> {
 
 tier3.addEventListener('click', () => {
     if (diamond < 1) {
-        warning.textContent = 'not enough, come back when you have 1 diamonds';
+        pushWarning('not enough, come back when you have 1 diamonds')
         return;
     }
     diamond -= 1
@@ -78,7 +79,7 @@ tier3.addEventListener('click', () => {
 
 tier4.addEventListener('click', () => {
     if (diamond < 10) {
-        warning.textContent = 'not enough, come back when you have 10 diamonds';
+        pushWarning('not enough, come back when you have 10 diamonds')
         return;
     }
     diamond -= 10
@@ -88,7 +89,7 @@ tier4.addEventListener('click', () => {
 
 tier5.addEventListener('click', () => {
     if (total < (10000 * costMultiplier)) {
-        warning.textContent = `not enough, come back when you have ${1000 * costMultiplier} clicks`;
+        pushWarning(`not enough, come back when you have ${1000 * costMultiplier} clicks`)
         return;
     }
     total = 0;
@@ -108,6 +109,17 @@ function updateButtonsText() {
     tier3.textContent = `double click power / cost 1 diamonds`
     tier4.textContent = `double click per second / cost 10 diamonds`
     tier5.textContent = `speed up the game x2! / rebirth ~ cost ${10000 * costMultiplier}+ clicks`
+}
+
+function pushWarning(string) {
+    const warning = document.createElement('p')
+    warning.innerText = string;
+    warning.classList.add('warning')
+    warningContainer.appendChild(warning)
+
+    setTimeout(() => {
+        warning.remove();
+    }, 2000)
 }
 
 updateIntervalSpeed()
