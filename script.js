@@ -7,9 +7,9 @@ const tier2 = document.querySelector('.tier2');
 const tier3 = document.querySelector('.tier3');
 const tier4 = document.querySelector('.tier4');
 
-let total = 10000;
-let clickMultiplier = 12;
-let automaticClick = 40;
+let total = 0;
+let clickMultiplier = 1;
+let automaticClick = 0;
 let diamond = 10;
 let speed = 1;
 let rebirthed = 1;
@@ -76,7 +76,7 @@ tier3.addEventListener('click', () => {
 })
 
 tier4.addEventListener('click', () => {
-    if (total < 10000 * costMultiplier) {
+    if (total < (10000 * costMultiplier)) {
         warning.textContent = `not enough, come back when you have ${1000 * costMultiplier} clicks`;
         return;
     }
@@ -87,6 +87,7 @@ tier4.addEventListener('click', () => {
     rebirthed += 1
     costMultiplier *= 2
     updateIntervalSpeed()
+    updateButtonsText()
     displayValue()
 })
 
@@ -97,3 +98,4 @@ function updateButtonsText() {
     tier4.textContent = `speed up the game x2! / rebirth ~ cost ${10000 * costMultiplier}+ clicks`
 }
 
+updateIntervalSpeed()
