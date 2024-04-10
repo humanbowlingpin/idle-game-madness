@@ -54,7 +54,7 @@ tier1.addEventListener("click", () => {
     }
     total -= 10 * costMultiplier * shopMultiplier
     clickMultiplier += shopMultiplier;
-    getDiamond(100, 1, shopMultiplier)
+    getDiamond(1000, 1, shopMultiplier)
     displayValue()
 });
 
@@ -65,7 +65,7 @@ tier2.addEventListener('click', ()=> {
     }
     total -= 100 * costMultiplier * shopMultiplier
     automaticClick += shopMultiplier;
-    getDiamond(3, 1, shopMultiplier)
+    getDiamond(100, 1, shopMultiplier)
     displayValue()
 })
 
