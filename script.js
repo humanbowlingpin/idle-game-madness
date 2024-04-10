@@ -90,4 +90,10 @@ tier4.addEventListener('click', () => {
     displayValue()
 })
 
+function updateButtonsText() {
+    tier1.textContent = `+1 clicking power / cost ${10 * costMultiplier} clicks`
+    tier2.textContent = `+1 click per second / cost ${100 * costMultiplier} clicks`
+    tier3.textContent = `double your click per second / cost 10 diamonds`
+    tier4.textContent = `speed up the game x2! / rebirth ~ cost ${10000 * costMultiplier}+ clicks`
+}
 
