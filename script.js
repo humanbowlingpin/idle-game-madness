@@ -25,7 +25,16 @@ clickButton.addEventListener("click", () => {
 });
 
 function displayValue (){
-    display.textContent = `${total} clicks || ${clickMultiplier} click power || ${automaticClick} c/s || ${diamond} diamonds || ${rebirthed - 1} rebirths`;
+    const totalClickDisplay = display.querySelector('.total-click')
+    const totalClickPowerDisplay = display.querySelector('.total-click-power')
+    const totalClickPerSecDisplay = display.querySelector('.total-click-per-sec')
+    const totalDiamondDisplay = display.querySelector('.total-diamond')
+    const totalRebirthDisplay = display.querySelector('.total-rebirth')
+    totalClickDisplay.textContent = total + ' clicks'
+    totalClickPowerDisplay.textContent = clickMultiplier + ' click power'
+    totalClickPerSecDisplay.textContent = automaticClick + ' c/s'
+    totalDiamondDisplay.textContent = diamond + ' diamonds'
+    totalRebirthDisplay.textContent = (rebirthed - 1) + ' rebirths'
 }
 
 function updateTotalAndDisplay() {
@@ -106,6 +115,16 @@ tier5.addEventListener('click', () => {
 })
 
 function updateButtonsText() {
+    const product1 = tier1.querySelector('.product')
+    const product2 = tier2.querySelector('.product')
+    const product3 = tier3.querySelector('.product')
+    const product4 = tier4.querySelector('.product')
+    const product5 = tier5.querySelector('.product')
+    const cost1 = tier1.querySelector('.cost')
+    const cost2 = tier2.querySelector('.cost')
+    const cost3 = tier3.querySelector('.cost')
+    const cost4 = tier4.querySelector('.cost')
+    const cost5 = tier5.querySelector('.cost')
     let multiplyString;
     if (shopMultiplier == 1) {
         multiplyString = 'double'
@@ -113,11 +132,20 @@ function updateButtonsText() {
     else {
         multiplyString = `${shopMultiplier * 2}x`
     }
-    tier1.textContent = `+${shopMultiplier} click power / cost ${10 * costMultiplier * shopMultiplier} clicks`
-    tier2.textContent = `+${shopMultiplier} click per second / cost ${100 * costMultiplier * shopMultiplier} clicks`
-    tier3.textContent = `${multiplyString} click power / cost ${shopMultiplier} diamonds`
-    tier4.textContent = `${multiplyString} click per second / cost ${10 * shopMultiplier} diamonds`
-    tier5.textContent = `speed up the game x2! / rebirth ~ cost ${10000 * costMultiplier}+ clicks`
+    product1.textContent = `+${shopMultiplier} click power`
+    cost1.textContent = `cost ${10 * costMultiplier * shopMultiplier} clicks`
+
+    product2.textContent = `+${shopMultiplier} click per second`
+    cost2.textContent = `cost ${100 * costMultiplier * shopMultiplier} clicks`
+
+    product3.textContent = `${multiplyString} click power`
+    cost3.textContent = `cost ${shopMultiplier} diamonds`
+
+    product4.textContent = `${multiplyString} click per second`
+    cost4.textContent = `cost ${10 * shopMultiplier} diamonds`
+
+    product5.textContent = `speed up the game x2!`
+    cost5.textContent = `cost ${10000 * costMultiplier}+ clicks`
 }
 
 function pushWarning(string) {

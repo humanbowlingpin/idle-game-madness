@@ -1,27 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Idle #1</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="warning-container" style="position: fixed; background-color: rgba(255, 0, 0, 0.5); right: 0;"></div>
-    <h1>Idle Clicker Game</h1>
-    <p class="total-display">0 click || 1 click power || 0 c/s || 0 diamond || 0 rebirth</p>
-    <select class="dropdownSelector">
-        <option value="1">buy 1x</option>
-        <option value="10">buy 10x</option>
-        <option value="100">buy 100x</option>
-        <option value="enterNumber">Enter Number</option>
-      </select>
-    <button class="click">click</button>
-    <button class="upgrade tier1">+1 click power / cost 10 clicks</button>
-    <button class="upgrade tier2">+1 click per second / cost 100 clicks</button>
-    <button class="upgrade tier3">double click power / cost 1 diamonds</button>
-    <button class="upgrade tier4">double click per second / cost 10 diamonds</button>
-    <button class="upgrade tier5">speed up the game x2! / rebirth ~ cost 10000+ clicks</button>
+    <div class="game">
+        <h1>Idle Clicker Game</h1>
+        <div class="total-display">
+            <div class="total-click">0 click</div>
+            <div class="total-click-power">1 click power</div>
+            <div class="total-click-per-sec">0 c/s</div>
+            <div class="total-diamond">0 diamond</div>
+            <div class="total-rebirth">0 rebirth</div>
+        </div>
+        <button class="click">click</button>
+        <div class="shop">
+            <div class="shop-selector">
+                Shop
+                <select class="dropdownSelector">
+                    <option value="1">buy 1x</option>
+                    <option value="10">buy 10x</option>
+                    <option value="100">buy 100x</option>
+                    <option value="enterNumber">Enter Number</option>
+                </select>
+            </div>
+            <div class="upgrade-buttons">
+                <div class="upgrade tier1">
+                    <div class="product">+1 click power</div>
+                    <div class="cost">cost 10 clicks</div>
+                </div>
+                <div class="upgrade tier2">
+                    <div class="product">+1 click per second</div>
+                    <div class="cost">cost 100 clicks</div>
+                </div>
+                <div class="upgrade tier3">
+                    <div class="product">double click power</div>
+                    <div class="cost">cost 1 diamonds</div>
+                </div>
+                <div class="upgrade tier4">
+                    <div class="product">double click per second</div>
+                    <div class="cost">cost 10 diamonds</div>
+                </div>
+                <div class="upgrade tier5">
+                    <div class="product">speed up the game x2!</div>
+                    <div class="cost">cost 10000+ clicks</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
+
 </html>
