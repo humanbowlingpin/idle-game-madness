@@ -109,6 +109,7 @@ tier5.addEventListener('click', () => {
     speed *= 2
     rebirthed += 1
     costMultiplier *= 2
+    diamond += rebirthed - 1
     updateIntervalSpeed()
     updateButtonsText()
     displayValue()
