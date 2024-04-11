@@ -19,10 +19,18 @@ let costMultiplier = 1;
 let shopMultiplier = 1;
 let intervalFunction;
 
-clickButton.addEventListener("click", () => {
+// Function to handle both button click and spacebar press
+function addManualClick() {
     total += 1 * clickMultiplier;
-    displayValue()
-});
+    displayValue();
+  }
+
+clickButton.addEventListener("click", addManualClick);
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Space') {
+      addManualClick();
+    }
+});  
 
 function displayValue (){
     const totalClickDisplay = display.querySelector('.total-click')
@@ -56,7 +64,7 @@ function getDiamond(range, diamondAmount, runningTime) {
     }
 }
 
-tier1.addEventListener("click", () => {
+function upgradeTierOne() {
     if (total < (10 * costMultiplier * shopMultiplier)) {
         pushWarning(`not enough, come back when you have ${10 * costMultiplier} clicks`)
         return;
@@ -65,9 +73,16 @@ tier1.addEventListener("click", () => {
     clickMultiplier += shopMultiplier;
     getDiamond(1000, 1, shopMultiplier)
     displayValue()
-});
+}
 
-tier2.addEventListener('click', ()=> {
+tier1.addEventListener("click", upgradeTierOne);
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit1') {
+        upgradeTierOne();
+    }
+});  
+
+function upgradeTierTwo() {
     if (total < (100 * costMultiplier * shopMultiplier)) {
         pushWarning(`not enough, come back when you have ${100 * costMultiplier} clicks`)
         return;
@@ -76,9 +91,16 @@ tier2.addEventListener('click', ()=> {
     automaticClick += shopMultiplier;
     getDiamond(100, 1, shopMultiplier)
     displayValue()
-})
+}
 
-tier3.addEventListener('click', () => {
+tier2.addEventListener("click", upgradeTierTwo);
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit2') {
+        upgradeTierTwo();
+    }
+});  
+
+function upgradeTierThree() {
     if (diamond < (1 * shopMultiplier)) {
         pushWarning('not enough, come back when you have 1 diamonds')
         return;
@@ -86,9 +108,16 @@ tier3.addEventListener('click', () => {
     diamond -= 1 * shopMultiplier
     clickMultiplier *= 2 * shopMultiplier;
     displayValue()
-})
+}
 
-tier4.addEventListener('click', () => {
+tier3.addEventListener('click', upgradeTierThree);
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit3') {
+        upgradeTierThree();
+    }
+});  
+
+function upgradeTierFour() {
     if (diamond < (10 * shopMultiplier)) {
         pushWarning('not enough, come back when you have 10 diamonds')
         return;
@@ -96,9 +125,16 @@ tier4.addEventListener('click', () => {
     diamond -= 10 * shopMultiplier
     automaticClick *= 2 * shopMultiplier;
     displayValue()
-})
+}
 
-tier5.addEventListener('click', () => {
+tier4.addEventListener('click', upgradeTierFour)
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit4') {
+        upgradeTierFour();
+    }
+});  
+
+function upgradeTierFive() {
     if (total < (10000 * costMultiplier)) {
         pushWarning(`not enough, come back when you have ${1000 * costMultiplier} clicks`)
         return;
@@ -113,7 +149,15 @@ tier5.addEventListener('click', () => {
     updateIntervalSpeed()
     updateButtonsText()
     displayValue()
-})
+}
+
+tier5.addEventListener('click', upgradeTierFive)
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit5') {
+        upgradeTierFive();
+    }
+});  
+
 
 function updateButtonsText() {
     const product1 = tier1.querySelector('.product')
