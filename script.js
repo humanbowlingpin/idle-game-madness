@@ -48,6 +48,7 @@ function displayValue (){
 function updateTotalAndDisplay() {
     total += automaticClick;
     displayValue();
+    getDiamond(10000, 1, 1)
 }
 
 function updateIntervalSpeed() {
@@ -136,7 +137,7 @@ document.addEventListener("keydown", (event) => {
 
 function upgradeTierFive() {
     if (total < (10000 * costMultiplier)) {
-        pushWarning(`not enough, come back when you have ${1000 * costMultiplier} clicks`)
+        pushWarning(`not enough, come back when you have ${10000 * costMultiplier} clicks`)
         return;
     }
     total = 0;
@@ -151,10 +152,22 @@ function upgradeTierFive() {
     displayValue()
 }
 
-tier5.addEventListener('click', upgradeTierFive)
+tier5.addEventListener('click', () => {
+    rebirthPopup.classList.add('active')
+})
 document.addEventListener("keydown", (event) => {
     if (event.code === 'Digit5') {
-        upgradeTierFive();
+        rebirthPopup.classList.add('active')
+    }
+});  
+
+const rebirthPopup = document.querySelector('.rebirth-popup')
+document.querySelector('.rebirth-button').addEventListener('click', () => {
+    upgradeTierFive()
+})
+document.addEventListener("keydown", (event) => {
+    if (event.code === 'Digit6') {
+        upgradeTierFive()
     }
 });  
 
@@ -232,6 +245,9 @@ document.querySelector('.faq-button').addEventListener('click', () => {
     console.log('ayo i dot click')
     infoPopup.classList.add('active')
 })
-document.querySelector('.hide-button').addEventListener('click', () => {
-    infoPopup.classList.remove('active')
+document.querySelectorAll('.hide-button').forEach(button => {
+    button.addEventListener('click', () => {
+        infoPopup.classList.remove('active')
+        rebirthPopup.classList.remove('active')
+    })
 })
