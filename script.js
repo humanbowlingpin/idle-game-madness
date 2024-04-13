@@ -49,6 +49,7 @@ function updateTotalAndDisplay() {
     total += automaticClick;
     displayValue();
     getDiamond(10000, 1, 1);
+    storeVariables();
 }
 
 function updateIntervalSpeed() {
@@ -61,19 +62,51 @@ function getDiamond(range, diamondAmount, runningTime) {
       const randomInt = Math.floor(Math.random() * range);
       if (randomInt === 0) {
         diamond += diamondAmount;
+        storeVariables();
       }
+    }
+}
+
+
+function storeVariables() {
+    const gameData = { 
+        total,
+        clickMultiplier,
+        automaticClick,
+        diamond,
+        speed,
+        rebirthed,
+        costMultiplier,
+    };
+    localStorage.setItem('gameData', JSON.stringify(gameData));
+}
+
+function retrieveVariablesAndUpdatePage() {
+    const storedData = localStorage.getItem('gameData');
+    if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        total = parsedData.total;
+        clickMultiplier = parsedData.clickMultiplier;
+        automaticClick = parsedData.automaticClick;
+        diamond = parsedData.diamond;
+        speed = parsedData.speed;
+        rebirthed = parsedData.rebirthed;
+        costMultiplier = parsedData.costMultiplier;
+        displayValue();
+        updateButtonsText();
     }
 }
 
 function upgradeTierOne() {
     if (total < (10 * costMultiplier * shopMultiplier)) {
-        pushWarning(`not enough, come back when you have ${10 * costMultiplier} clicks`)
+        pushWarning(`not enough, come back when you have ${10 * costMultiplier * shopMultiplier} clicks`)
         return;
     }
     total -= 10 * costMultiplier * shopMultiplier
     clickMultiplier += shopMultiplier;
     getDiamond(1000, 1, shopMultiplier)
     displayValue()
+    storeVariables();
 }
 
 tier1.addEventListener("click", upgradeTierOne);
@@ -85,13 +118,14 @@ document.addEventListener("keydown", (event) => {
 
 function upgradeTierTwo() {
     if (total < (100 * costMultiplier * shopMultiplier)) {
-        pushWarning(`not enough, come back when you have ${100 * costMultiplier} clicks`)
+        pushWarning(`not enough, come back when you have ${100 * costMultiplier * shopMultiplier} clicks`)
         return;
     }
     total -= 100 * costMultiplier * shopMultiplier
     automaticClick += shopMultiplier;
     getDiamond(100, 1, shopMultiplier)
     displayValue()
+    storeVariables();
 }
 
 tier2.addEventListener("click", upgradeTierTwo);
@@ -109,6 +143,7 @@ function upgradeTierThree() {
     diamond -= 1 * shopMultiplier
     clickMultiplier *= 2 * shopMultiplier;
     displayValue()
+    storeVariables();
 }
 
 tier3.addEventListener('click', upgradeTierThree);
@@ -126,6 +161,7 @@ function upgradeTierFour() {
     diamond -= 10 * shopMultiplier
     automaticClick *= 2 * shopMultiplier;
     displayValue()
+    storeVariables();
 }
 
 tier4.addEventListener('click', upgradeTierFour)
@@ -150,6 +186,7 @@ function upgradeTierFive() {
     updateIntervalSpeed()
     updateButtonsText()
     displayValue()
+    storeVariables();
 }
 
 tier5.addEventListener('click', () => {
@@ -237,7 +274,7 @@ function updateShop(value) {
 document.querySelector(".dropdownSelector").addEventListener("change", handleSelection);  
 
 updateIntervalSpeed()
-
+retrieveVariablesAndUpdatePage()
 
 const infoPopup = document.querySelector('.info-popup')
 
