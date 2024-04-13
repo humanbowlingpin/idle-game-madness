@@ -224,3 +224,14 @@ function updateShop(value) {
 document.querySelector(".dropdownSelector").addEventListener("change", handleSelection);  
 
 updateIntervalSpeed()
+
+
+const infoPopup = document.querySelector('.info-popup')
+
+document.querySelector('.faq-button').addEventListener('click', () => {
+    console.log('ayo i dot click')
+    infoPopup.classList.add('active')
+})
+document.querySelector('.hide-button').addEventListener('click', () => {
+    infoPopup.classList.remove('active')
+})
