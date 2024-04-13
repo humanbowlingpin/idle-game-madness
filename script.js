@@ -48,7 +48,7 @@ function displayValue (){
 function updateTotalAndDisplay() {
     total += automaticClick;
     displayValue();
-    getDiamond(10000, 1, 1)
+    getDiamond(10000, 1, 1);
 }
 
 function updateIntervalSpeed() {
