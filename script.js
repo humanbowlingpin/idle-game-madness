@@ -1,6 +1,4 @@
 const display = document.querySelector(".total-display");
-const warningContainer = document.querySelector(".warning-container");
-const warning = document.querySelector(".warning");
 const clickButton = document.querySelector(".click");
 
 let intervalFunction;
@@ -23,11 +21,6 @@ function addManualClick() {
   }
 
 clickButton.addEventListener("click", addManualClick);
-document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
-      addManualClick();
-    }
-});  
 
 function displayValue (){
     display.querySelector('.total-click').textContent = gameData.total + ' clicks'
@@ -97,7 +90,7 @@ const upgrade = {
     tierFive: () => tryPurchase({
         cost: 10000 * gameData.costMult,
         resource: { value: gameData.total, set value(v) { gameData.total = v }, get value() { return gameData.total } },
-        onSuccess: rebirth()
+        onSuccess: rebirth
     })
 }
 
@@ -118,9 +111,9 @@ function rebirth() {
     gameData.clickMult = 1
     gameData.autoClicker = 0;
     gameData.speed *= 2
-    gameData.rebirthed += 1
+    gameData.rebirths += 1
     gameData.costMult *= 2
-    gameData.diamond += rebirthed - 1
+    gameData.diamond += gameData.rebirths - 1
     updateIntervalSpeed()
     updateButtonsText()
 }
@@ -141,6 +134,7 @@ upgradeButtons.forEach(button => {
 })
 
 document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') addManualClick()
     if (event.code === 'Digit1') upgrade.tierOne()
     if (event.code === 'Digit2') upgrade.tierTwo()
     if (event.code === 'Digit3') upgrade.tierThree()
@@ -173,36 +167,32 @@ function updateButtonsText() {
         costText.innerText = relation[tier].toString()
         if (tier === "5") return
         else if (tier === "3" || tier === "4") {
-            let multiplyString;
-            if (gameData.shopMult == 1) multiplyString = 'double'
-            else multiplyString = `${gameData.shopMult * 2}x`
+            if (gameData.shopMult == 1) productText.innerText = 'double'
+            else productText.innerText = `${gameData.shopMult * 2}x`
         } 
         else productText.innerText = gameData.shopMult.toString()
     })
 }
 
+const warningContainer = document.querySelector(".warning-container");
 function pushWarning(string) {
     const warning = document.createElement('p')
     warning.innerText = string;
     warning.classList.add('warning')
     warningContainer.appendChild(warning)
-
-    setTimeout(() => {
-        warning.remove();
-    }, 2000)
+    setTimeout(() => {warning.remove();}, 2000)
 }
 
 function handleSelection() {
     let selectedValue = document.querySelector(".dropdownSelector").value;
     if (selectedValue === "enterNumber") {
-      var num = prompt("Enter a number:");
-      if (num !== null && !isNaN(num)) {
-        updateShop(Number(num));
-      }
+        var num = prompt("Enter a number:")
+        if (num !== null && !isNaN(num)) updateShop(Number(num))
     } else {
-      updateShop(Number(selectedValue));
+        updateShop(Number(selectedValue))
     }
-  }
+    updateButtonsText()
+}
   
 function updateShop(value) {
     gameData.shopMult = value;
