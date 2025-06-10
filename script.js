@@ -113,6 +113,7 @@ function rebirth() {
     gameData.speed *= 2
     gameData.rebirths += 1
     gameData.costMult *= 2
+    gameData.shopMult = 1
     gameData.diamond += gameData.rebirths - 1
     updateIntervalSpeed()
     updateButtonsText()
