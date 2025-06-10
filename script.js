@@ -3,50 +3,42 @@ const warningContainer = document.querySelector(".warning-container");
 const warning = document.querySelector(".warning");
 const clickButton = document.querySelector(".click");
 
-const tier1 = document.querySelector(".tier1");
-const tier2 = document.querySelector('.tier2');
-const tier3 = document.querySelector('.tier3');
-const tier4 = document.querySelector('.tier4');
-const tier5 = document.querySelector('.tier5');
-
-let total = 0;
-let clickMultiplier = 1;
-let automaticClick = 0;
-let diamond = 0;
-let speed = 1;
-let rebirthed = 1;
-let costMultiplier = 1;
-let shopMultiplier = 1;
 let intervalFunction;
+
+const gameData = JSON.parse(localStorage.getItem('gameData')) || {
+    total: 0,
+    clickMult: 1,
+    autoClicker: 0,
+    diamond: 0,
+    speed: 1,
+    rebirths: 1,
+    costMult: 1,
+    shopMult: 1,
+}
 
 // Function to handle both button click and spacebar press
 function addManualClick() {
-    total += 1 * clickMultiplier;
+    gameData.total += 1 * gameData.clickMult;
     displayValue();
   }
 
 clickButton.addEventListener("click", addManualClick);
-document.addEventListener("keydown", (event) => {
+document.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
       addManualClick();
     }
 });  
 
 function displayValue (){
-    const totalClickDisplay = display.querySelector('.total-click')
-    const totalClickPowerDisplay = display.querySelector('.total-click-power')
-    const totalClickPerSecDisplay = display.querySelector('.total-click-per-sec')
-    const totalDiamondDisplay = display.querySelector('.total-diamond')
-    const totalRebirthDisplay = display.querySelector('.total-rebirth')
-    totalClickDisplay.textContent = total + ' clicks'
-    totalClickPowerDisplay.textContent = clickMultiplier + ' click power'
-    totalClickPerSecDisplay.textContent = automaticClick + ' c/s'
-    totalDiamondDisplay.textContent = diamond + ' diamonds'
-    totalRebirthDisplay.textContent = (rebirthed - 1) + ' rebirths'
+    display.querySelector('.total-click').textContent = gameData.total + ' clicks'
+    display.querySelector('.total-click-power').textContent = gameData.clickMult + ' click power'
+    display.querySelector('.total-click-per-sec').textContent = gameData.autoClicker + ' c/s'
+    display.querySelector('.total-diamond').textContent = gameData.diamond + ' diamonds'
+    display.querySelector('.total-rebirth').textContent = (gameData.rebirths - 1) + ' rebirths'
 }
 
 function updateTotalAndDisplay() {
-    total += automaticClick;
+    gameData.total += gameData.autoClicker;
     displayValue();
     getDiamond(10000, 1, 1);
     storeVariables();
@@ -54,195 +46,139 @@ function updateTotalAndDisplay() {
 
 function updateIntervalSpeed() {
     clearInterval(intervalFunction);
-    intervalFunction = setInterval(updateTotalAndDisplay, (1000 / speed)); // Create new interval with updated speed
+    intervalFunction = setInterval(updateTotalAndDisplay, (1000 / gameData.speed)); // Create new interval with updated speed
 }
 
 function getDiamond(range, diamondAmount, runningTime) {
     for (let i = 0; i < runningTime; i++) {
       const randomInt = Math.floor(Math.random() * range);
       if (randomInt === 0) {
-        diamond += diamondAmount;
+        gameData.diamond += diamondAmount;
         storeVariables();
       }
     }
 }
 
+function storeVariables() {localStorage.setItem('gameData', JSON.stringify(gameData));}
 
-function storeVariables() {
-    const gameData = { 
-        total,
-        clickMultiplier,
-        automaticClick,
-        diamond,
-        speed,
-        rebirthed,
-        costMultiplier,
-    };
-    localStorage.setItem('gameData', JSON.stringify(gameData));
+const upgrade = {
+    tierOne: () => tryPurchase({
+        cost: 10 * gameData.costMult * gameData.shopMult,
+        resource: { value: gameData.total, set value(v) { gameData.total = v }, get value() { return gameData.total } },
+        onSuccess: () => {
+            gameData.clickMult += gameData.shopMult;
+            getDiamond(1000, 1, gameData.shopMult);
+        }
+    }),
+    tierTwo: () => tryPurchase({
+        cost: 100 * gameData.costMult * gameData.shopMult,
+        resource: { value: gameData.total, set value(v) { gameData.total = v }, get value() { return gameData.total } },
+        onSuccess: () => {
+            gameData.autoClicker += gameData.shopMult;
+            getDiamond(100, 1, gameData.shopMult);
+        }
+    }),
+    tierThree: () => tryPurchase({
+        cost: 1 * gameData.shopMult,
+        resource: { value: gameData.diamond, set value(v) { gameData.diamond = v }, get value() { return gameData.diamond } },
+        onSuccess: () => {
+            gameData.clickMult *= 2 * gameData.shopMult;
+            getDiamond(100, 1, gameData.shopMult);
+        }
+    }),
+    tierFour: () => tryPurchase({
+        cost: 10 * gameData.shopMult,
+        resource: { value: gameData.diamond, set value(v) { gameData.diamond = v }, get value() { return gameData.diamond } },
+        onSuccess: () => {
+            gameData.autoClicker *= 2 * gameData.shopMult;
+            getDiamond(100, 1, gameData.shopMult);
+        }
+    }),
+    tierFive: () => tryPurchase({
+        cost: 10000 * gameData.costMult,
+        resource: { value: gameData.total, set value(v) { gameData.total = v }, get value() { return gameData.total } },
+        onSuccess: rebirth()
+    })
 }
 
-function retrieveVariablesAndUpdatePage() {
-    const storedData = localStorage.getItem('gameData');
-    if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        total = parsedData.total;
-        clickMultiplier = parsedData.clickMultiplier;
-        automaticClick = parsedData.automaticClick;
-        diamond = parsedData.diamond;
-        speed = parsedData.speed;
-        rebirthed = parsedData.rebirthed;
-        costMultiplier = parsedData.costMultiplier;
-        displayValue();
-        updateButtonsText();
-    }
-}
-
-function upgradeTierOne() {
-    if (total < (10 * costMultiplier * shopMultiplier)) {
-        pushWarning(`not enough, come back when you have ${10 * costMultiplier * shopMultiplier} clicks`)
-        return;
-    }
-    total -= 10 * costMultiplier * shopMultiplier
-    clickMultiplier += shopMultiplier;
-    getDiamond(1000, 1, shopMultiplier)
+function tryPurchase({cost, resource, onSuccess}) {
+    if (resource.value < cost) {
+        pushWarning(`Not enough, come back when you have ${cost}`);
+        return false;
+      }
+    resource.value -= cost
+    onSuccess()
     displayValue()
-    storeVariables();
+    storeVariables()
+    return true
 }
 
-tier1.addEventListener("click", upgradeTierOne);
-document.addEventListener("keydown", (event) => {
-    if (event.code === 'Digit1') {
-        upgradeTierOne();
-    }
-});  
-
-function upgradeTierTwo() {
-    if (total < (100 * costMultiplier * shopMultiplier)) {
-        pushWarning(`not enough, come back when you have ${100 * costMultiplier * shopMultiplier} clicks`)
-        return;
-    }
-    total -= 100 * costMultiplier * shopMultiplier
-    automaticClick += shopMultiplier;
-    getDiamond(100, 1, shopMultiplier)
-    displayValue()
-    storeVariables();
-}
-
-tier2.addEventListener("click", upgradeTierTwo);
-document.addEventListener("keydown", (event) => {
-    if (event.code === 'Digit2') {
-        upgradeTierTwo();
-    }
-});  
-
-function upgradeTierThree() {
-    if (diamond < (1 * shopMultiplier)) {
-        pushWarning('not enough, come back when you have 1 diamonds')
-        return;
-    }
-    diamond -= 1 * shopMultiplier
-    clickMultiplier *= 2 * shopMultiplier;
-    displayValue()
-    storeVariables();
-}
-
-tier3.addEventListener('click', upgradeTierThree);
-document.addEventListener("keydown", (event) => {
-    if (event.code === 'Digit3') {
-        upgradeTierThree();
-    }
-});  
-
-function upgradeTierFour() {
-    if (diamond < (10 * shopMultiplier)) {
-        pushWarning('not enough, come back when you have 10 diamonds')
-        return;
-    }
-    diamond -= 10 * shopMultiplier
-    automaticClick *= 2 * shopMultiplier;
-    displayValue()
-    storeVariables();
-}
-
-tier4.addEventListener('click', upgradeTierFour)
-document.addEventListener("keydown", (event) => {
-    if (event.code === 'Digit4') {
-        upgradeTierFour();
-    }
-});  
-
-function upgradeTierFive() {
-    if (total < (10000 * costMultiplier)) {
-        pushWarning(`not enough, come back when you have ${10000 * costMultiplier} clicks`)
-        return;
-    }
-    total = 0;
-    clickMultiplier = 1;
-    automaticClick = 0;
-    speed *= 2
-    rebirthed += 1
-    costMultiplier *= 2
-    diamond += rebirthed - 1
+function rebirth() {
+    gameData.total = 0
+    gameData.clickMult = 1
+    gameData.autoClicker = 0;
+    gameData.speed *= 2
+    gameData.rebirthed += 1
+    gameData.costMult *= 2
+    gameData.diamond += rebirthed - 1
     updateIntervalSpeed()
     updateButtonsText()
-    displayValue()
-    storeVariables();
 }
 
-tier5.addEventListener('click', () => {
-    rebirthPopup.classList.add('active')
-})
-document.addEventListener("keydown", (event) => {
-    if (event.code === 'Digit5') {
-        rebirthPopup.classList.add('active')
+const upgradeButtons = document.querySelectorAll('.upgrade')
+upgradeButtons.forEach(button => {
+    const relation = {
+     '1': upgrade.tierOne,
+     '2': upgrade.tierTwo,
+     '3': upgrade.tierThree,
+     '4': upgrade.tierFour,
+     '5': () => rebirthPopup.classList.add('active'),
     }
-});  
-
-const rebirthPopup = document.querySelector('.rebirth-popup')
-document.querySelector('.rebirth-button').addEventListener('click', () => {
-    upgradeTierFive()
-    rebirthPopup.classList.remove('active')
+    button.addEventListener('click', () => {
+        const tier = button.dataset.tier
+        relation[tier]()
+    })
 })
-document.addEventListener("keydown", (event) => {
+
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Digit1') upgrade.tierOne()
+    if (event.code === 'Digit2') upgrade.tierTwo()
+    if (event.code === 'Digit3') upgrade.tierThree()
+    if (event.code === 'Digit4') upgrade.tierFour()
+    if (event.code === 'Digit5') rebirthPopup.classList.add('active')
     if (event.code === 'Digit6') {
-        upgradeTierFive()
+        upgrade.tierFive()
         rebirthPopup.classList.remove('active')
     }
-});  
+})
 
+const rebirthPopup = document.querySelector('.rebirth-popup')
+rebirthPopup.addEventListener('click', () => {
+    upgrade.tierFive()
+    rebirthPopup.classList.remove('active')
+})
 
 function updateButtonsText() {
-    const product1 = tier1.querySelector('.product')
-    const product2 = tier2.querySelector('.product')
-    const product3 = tier3.querySelector('.product')
-    const product4 = tier4.querySelector('.product')
-    const product5 = tier5.querySelector('.product')
-    const cost1 = tier1.querySelector('.cost')
-    const cost2 = tier2.querySelector('.cost')
-    const cost3 = tier3.querySelector('.cost')
-    const cost4 = tier4.querySelector('.cost')
-    const cost5 = tier5.querySelector('.cost')
-    let multiplyString;
-    if (shopMultiplier == 1) {
-        multiplyString = 'double'
-    }
-    else {
-        multiplyString = `${shopMultiplier * 2}x`
-    }
-    product1.textContent = `+${shopMultiplier} click power`
-    cost1.textContent = `cost ${10 * costMultiplier * shopMultiplier} clicks`
-
-    product2.textContent = `+${shopMultiplier} click per second`
-    cost2.textContent = `cost ${100 * costMultiplier * shopMultiplier} clicks`
-
-    product3.textContent = `${multiplyString} click power`
-    cost3.textContent = `cost ${shopMultiplier} diamonds`
-
-    product4.textContent = `${multiplyString} click per second`
-    cost4.textContent = `cost ${10 * shopMultiplier} diamonds`
-
-    product5.textContent = `speed up the game x2!`
-    cost5.textContent = `cost ${10000 * costMultiplier}+ clicks`
+    upgradeButtons.forEach(button => {
+        const tier = button.dataset.tier
+        const relation = {
+            "1": 10 * gameData.costMult * gameData.shopMult,
+            "2": 100 * gameData.costMult * gameData.shopMult,
+            "3": gameData.shopMult,
+            "4": 10 * gameData.shopMult,
+            "5": 10000 * gameData.shopMult,
+        }
+        const productText = button.querySelector('span.product')
+        const costText = button.querySelector('span.cost')
+        costText.innerText = relation[tier].toString()
+        if (tier === "5") return
+        else if (tier === "3" || tier === "4") {
+            let multiplyString;
+            if (gameData.shopMult == 1) multiplyString = 'double'
+            else multiplyString = `${gameData.shopMult * 2}x`
+        } 
+        else productText.innerText = gameData.shopMult.toString()
+    })
 }
 
 function pushWarning(string) {
@@ -269,14 +205,11 @@ function handleSelection() {
   }
   
 function updateShop(value) {
-    shopMultiplier = value;
+    gameData.shopMult = value;
     updateButtonsText();
-  }
+}
   
 document.querySelector(".dropdownSelector").addEventListener("change", handleSelection);  
-
-updateIntervalSpeed()
-retrieveVariablesAndUpdatePage()
 
 const infoPopup = document.querySelector('.info-popup')
 
@@ -290,3 +223,7 @@ document.querySelectorAll('.hide-button').forEach(button => {
         rebirthPopup.classList.remove('active')
     })
 })
+
+updateIntervalSpeed()
+displayValue()
+updateButtonsText()
