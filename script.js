@@ -1,3 +1,5 @@
+// localStorage.removeItem("gameData")
+
 const display = document.querySelector(".total-display");
 const clickButton = document.querySelector(".click");
 
@@ -5,8 +7,10 @@ let intervalFunction;
 
 const gameData = JSON.parse(localStorage.getItem('gameData')) || {
     total: 0,
-    clickMult: 1,
+    clickPower: 1,
     autoClicker: 0,
+    clickMult: 1,
+    autoMult: 1,
     diamond: 0,
     speed: 1,
     rebirths: 1,
@@ -16,7 +20,7 @@ const gameData = JSON.parse(localStorage.getItem('gameData')) || {
 
 // Function to handle both button click and spacebar press
 function addManualClick() {
-    gameData.total += 1 * gameData.clickMult;
+    gameData.total += 1 * gameData.clickPower * gameData.clickMult;
     displayValue();
   }
 
@@ -24,14 +28,14 @@ clickButton.addEventListener("click", addManualClick);
 
 function displayValue (){
     display.querySelector('.total-click').textContent = gameData.total + ' clicks'
-    display.querySelector('.total-click-power').textContent = gameData.clickMult + ' click power'
-    display.querySelector('.total-click-per-sec').textContent = gameData.autoClicker + ' c/s'
+    display.querySelector('.total-click-power').textContent = gameData.clickPower * gameData.clickMult + ' click power'
+    display.querySelector('.total-click-per-sec').textContent = gameData.autoClicker * gameData.autoMult + ' c/s'
     display.querySelector('.total-diamond').textContent = gameData.diamond + ' diamonds'
     display.querySelector('.total-rebirth').textContent = (gameData.rebirths - 1) + ' rebirths'
 }
 
 function updateTotalAndDisplay() {
-    gameData.total += gameData.autoClicker;
+    gameData.total += gameData.autoClicker * gameData.autoMult;
     displayValue();
     getDiamond(10000, 1, 1);
     storeVariables();
@@ -59,7 +63,7 @@ const upgrade = {
         cost: 10 * gameData.costMult * gameData.shopMult,
         resource: { value: gameData.total, set value(v) { gameData.total = v }, get value() { return gameData.total } },
         onSuccess: () => {
-            gameData.clickMult += gameData.shopMult;
+            gameData.clickPower += gameData.shopMult;
             getDiamond(1000, 1, gameData.shopMult);
         }
     }),
@@ -75,7 +79,7 @@ const upgrade = {
         cost: 1 * gameData.shopMult,
         resource: { value: gameData.diamond, set value(v) { gameData.diamond = v }, get value() { return gameData.diamond } },
         onSuccess: () => {
-            gameData.clickMult *= 2 * gameData.shopMult;
+            gameData.clickMult += gameData.shopMult;
             getDiamond(100, 1, gameData.shopMult);
         }
     }),
@@ -83,7 +87,7 @@ const upgrade = {
         cost: 10 * gameData.shopMult,
         resource: { value: gameData.diamond, set value(v) { gameData.diamond = v }, get value() { return gameData.diamond } },
         onSuccess: () => {
-            gameData.autoClicker *= 2 * gameData.shopMult;
+            gameData.autoMult += gameData.shopMult;
             getDiamond(100, 1, gameData.shopMult);
         }
     }),
@@ -108,8 +112,10 @@ function tryPurchase({cost, resource, onSuccess}) {
 
 function rebirth() {
     gameData.total = 0
-    gameData.clickMult = 1
+    gameData.clickPower = 1
     gameData.autoClicker = 0;
+    gameData.clickMult = 1
+    gameData.autoMult = 1
     gameData.speed *= 2
     gameData.rebirths += 1
     gameData.costMult *= 2
@@ -167,10 +173,10 @@ function updateButtonsText() {
         const costText = button.querySelector('span.cost')
         costText.innerText = relation[tier].toString()
         if (tier === "5") return
-        else if (tier === "3" || tier === "4") {
-            if (gameData.shopMult == 1) productText.innerText = 'double'
-            else productText.innerText = `${gameData.shopMult * 2}x`
-        } 
+        // else if (tier === "3" || tier === "4") {
+        //     if (gameData.shopMult == 1) productText.innerText = 'double'
+        //     else productText.innerText = `${gameData.shopMult * 2}x`
+        // } 
         else productText.innerText = gameData.shopMult.toString()
     })
 }
