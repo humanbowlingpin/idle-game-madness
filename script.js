@@ -201,10 +201,12 @@ document.addEventListener("keydown", (event) => {
 const rebirthPopup = document.querySelector('.rebirth-popup')
 document.querySelector('.rebirth-button').addEventListener('click', () => {
     upgradeTierFive()
+    rebirthPopup.classList.remove('active')
 })
 document.addEventListener("keydown", (event) => {
     if (event.code === 'Digit6') {
         upgradeTierFive()
+        rebirthPopup.classList.remove('active')
     }
 });  
 
